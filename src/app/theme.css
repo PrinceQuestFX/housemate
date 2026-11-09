@@ -1,0 +1,13 @@
+html{background:#10272B;color-scheme:dark}
+body{min-height:100dvh;color:#EAF4F1;background:radial-gradient(900px 480px at 8% -8%,#2a7a7255,transparent),radial-gradient(700px 460px at 100% 0,#F4B94222,transparent),radial-gradient(600px 500px at 50% 110%,#FF8FA322,transparent),#10272B}
+main [class*="text-neutral-"]{color:#9FC3BC}
+main [class*="border-neutral"]{border-color:#2F5C64}
+main [class*="bg-neutral-"],main .bg-white{background-color:#1B3F45}
+main a:not([class*="bg-"]){color:#6EE0B5}
+main h1{font-weight:800;background:linear-gradient(90deg,#F4B942,#6EE0B5);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes enter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes shine{from{background-position:0 0}to{background-position:200% 0}}
+main>*{animation:enter .6s cubic-bezier(.2,.7,.2,1) both}
+main>*:nth-child(2){animation-delay:.08s}main>*:nth-child(3){animation-delay:.16s}main>*:nth-child(4){animation-delay:.24s}main>*:nth-child(n+5){animation-delay:.32s}
+.hm-brand{background:linear-gradient(90deg,#F4B942,#6EE0B5,#8EC5FF,#F4B942);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite;font-weight:800;letter-spacing:.04em}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

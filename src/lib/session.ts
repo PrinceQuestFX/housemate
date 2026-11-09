@@ -12,7 +12,7 @@ export async function getContext() {
     .eq("user_id", userId)
     .limit(1)
     .maybeSingle();
-  if (!m) redirect("/login?error=1");
+  if (!m) redirect("/attente"); // compte créé, en attente de validation
   return { supabase, userId, householdId: m.household_id as string, isAdmin: m.role === "admin" };
 }
 

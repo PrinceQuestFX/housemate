@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { requestReset } from "../actions";
-import { Field, btn, input } from "@/components/ui";
+import s from "../login/landing.module.css";
 
 export default async function ResetPage({ searchParams }: { searchParams: Promise<{ sent?: string }> }) {
   const { sent } = await searchParams;
   return (
-    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-6 p-6">
-      <h1 className="text-2xl font-semibold">Mot de passe oublié</h1>
-      {sent ? (
-        <p className="text-sm">Si ce compte existe, un e-mail de réinitialisation vient d'être envoyé.</p>
-      ) : (
-        <form action={requestReset} className="space-y-4">
-          <Field label="Adresse e-mail"><input name="email" type="email" required className={input} /></Field>
-          <button className={`${btn} w-full`}>Envoyer le lien</button>
-        </form>
-      )}
-      <Link href="/login" className="text-center text-sm underline">Retour</Link>
+    <main className={s.page}>
+      <div className={s.solo}>
+        <span className={s.brand}>HOUSEMATE</span>
+        <h1 className={s.h1}>Mot de passe oublié ?</h1>
+        {sent ? <p className={s.lead}>Si ce compte existe, un e-mail de réinitialisation vient d&apos;être envoyé.</p> : (
+          <form action={requestReset} className={s.card}>
+            <label className={s.field}>Adresse e-mail<input name="email" type="email" required /></label>
+            <button className={s.cta}>Envoyer le lien</button>
+          </form>
+        )}
+        <div className={s.links}><Link href="/login">Retour à la connexion</Link></div>
+      </div>
     </main>
   );
 }
