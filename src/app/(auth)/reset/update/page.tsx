@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { updatePassword } from "../../actions";
 import { PasswordField } from "@/components/password-field";
 import s from "../../login/landing.module.css";
@@ -12,7 +13,7 @@ export default async function UpdatePasswordPage({ searchParams }: { searchParam
         <form action={updatePassword} className={s.card}>
           <label className={s.field}>Mot de passe (10 caractères minimum)<PasswordField minLength={10} autoComplete="new-password" /></label>
           {error && <p role="alert" className={s.err}>Mot de passe invalide ou lien expiré.</p>}
-          <button className={s.cta}>Enregistrer</button>
+          <SubmitButton className={s.cta}>Enregistrer</SubmitButton>
         </form>
       </div>
     </main>

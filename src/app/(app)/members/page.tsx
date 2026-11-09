@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { getContext, loadMembers, currentPeriod } from "@/lib/session";
 import { monthlyScore } from "@/domain/rules";
 import { fmt } from "@/lib/money";
@@ -35,8 +36,8 @@ export default async function MembersPage() {
             <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 text-sm">
               <span>{p.name}<span className="block text-xs text-neutral-500">{p.email}</span></span>
               <span className="flex gap-2">
-                <form action={approveMember}><input type="hidden" name="id" value={p.id} /><button className={btn}>Accepter</button></form>
-                <form action={rejectMember}><input type="hidden" name="id" value={p.id} /><button className={btnDanger}>Refuser</button></form>
+                <form action={approveMember}><input type="hidden" name="id" value={p.id} /><SubmitButton className={btn}>Accepter</SubmitButton></form>
+                <form action={rejectMember}><input type="hidden" name="id" value={p.id} /><SubmitButton className={btnDanger}>Refuser</SubmitButton></form>
               </span>
             </div>
           ))}
@@ -50,7 +51,7 @@ export default async function MembersPage() {
               {ctx.isAdmin && m.id !== ctx.userId && (
                 <form action={setRole} className="mt-2">
                   <input type="hidden" name="id" value={m.id} /><input type="hidden" name="role" value={m.role === "admin" ? "member" : "admin"} />
-                  <button className={btnGhost}>{m.role === "admin" ? "Retirer admin" : "Nommer admin"}</button>
+                  <SubmitButton className={btnGhost}>{m.role === "admin" ? "Retirer admin" : "Nommer admin"}</SubmitButton>
                 </form>
               )}
             </span>

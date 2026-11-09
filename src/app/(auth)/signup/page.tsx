@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import Link from "next/link";
 import { signUp } from "./actions";
 import { PasswordField } from "@/components/password-field";
@@ -24,7 +25,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
           <label className={s.field}>Adresse e-mail<input name="email" type="email" required autoComplete="email" /></label>
           <label className={s.field}>Mot de passe (10 caractères minimum)<PasswordField minLength={10} autoComplete="new-password" /></label>
           {error && <p role="alert" className={s.err}>{ERRORS[error] ?? "Une erreur est survenue."}</p>}
-          <button className={s.cta}>Créer mon compte</button>
+          <SubmitButton className={s.cta}>Créer mon compte</SubmitButton>
           <div className={s.links}><Link href="/login">J&apos;ai déjà un compte</Link></div>
         </form>
       </div>

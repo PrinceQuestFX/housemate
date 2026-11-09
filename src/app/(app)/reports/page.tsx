@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { getContext, currentPeriod } from "@/lib/session";
 import { isPeriod, loadReport } from "@/server/report-data";
 import { CATEGORIES } from "@/lib/labels";
@@ -25,7 +26,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         <h1 className="text-2xl font-semibold">Rapport mensuel</h1>
         <form className="flex gap-2">
           <select name="period" defaultValue={period} className={input}>{recentPeriods().map((p) => <option key={p}>{p}</option>)}</select>
-          <button className="rounded-lg border px-3 text-sm">Afficher</button>
+          <SubmitButton className="rounded-lg border px-3 text-sm">Afficher</SubmitButton>
         </form>
       </div>
       <h1 className="hidden text-2xl font-semibold print:block">HOUSEMATE · Bilan {period}</h1>

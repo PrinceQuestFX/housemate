@@ -1,9 +1,12 @@
+import { SubmitButton } from "@/components/submit-button";
 import { getContext, loadMembers } from "@/lib/session";
 import { assignCleaning, completeCleaning, verifyCleaning } from "@/server/actions";
+import { generateCycle } from "@/server/cycle-actions";
 import { CLEANING_STATUS, ROOMS } from "@/lib/labels";
 import { Badge, Empty, Field, btn, btnGhost, card, input } from "@/components/ui";
 
-export default async function CleaningPage() {
+export default async function CleaningPage({ searchParams }: { searchParams: Promise<{ cycle?: string }> }) {
+  const { cycle } = await searchParams;
   const ctx = await getContext();
   const members = await loadMembers(ctx);
   const name = (id: string) => members.find((m) => m.id === id)?.name ?? "—";
@@ -25,10 +28,28 @@ export default async function CleaningPage() {
             </Field>
             <Field label="Responsable"><select name="assignee" className={input}>{members.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select></Field>
             <Field label="Échéance"><input name="due" type="date" required className={input} /></Field>
-            <button className={btn}>Attribuer</button>
+            <SubmitButton className={btn}>Attribuer</SubmitButton>
           </form>
         </details>
       )}
+
+      {ctx.isAdmin && (
+        <details className={card}>
+          <summary className="cursor-pointer font-medium">Programme du cycle (15 jours)</summary>
+          <form action={generateCycle} className="mt-4 space-y-3">
+            <p className="text-sm text-neutral-500">Une journée de ménage par personne, tous les 3 jours. Les dates passées et les doublons sont ignorés.</p>
+            <Field label="Date du jour 1"><input name="start" type="date" defaultValue="2026-11-08" required className={input} /></Field>
+            {[1, 4, 7, 10, 13].map((d, i) => (
+              <Field key={d} label={`Jour ${d}`}>
+                <select name={`s${i}`} defaultValue={members[i]?.id} className={input}>{members.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select>
+              </Field>
+            ))}
+            <Field label="Nombre de cycles"><select name="cycles" defaultValue="2" className={input}><option>1</option><option>2</option><option>3</option></select></Field>
+            <SubmitButton className={btn}>Générer le programme</SubmitButton>
+          </form>
+        </details>
+      )}
+      {cycle && <p role="status" className="text-sm text-emerald-300">{cycle === "err" ? "Programme incomplet : choisissez une personne pour chaque jour." : `${cycle} tâche(s) de ménage créée(s).`}</p>}
 
       {!tasks?.length && <Empty>Aucune tâche planifiée.</Empty>}
       {tasks?.map((t) => (
@@ -44,7 +65,7 @@ export default async function CleaningPage() {
             <form action={completeCleaning} className="space-y-2">
               <input type="hidden" name="id" value={t.id} />
               <input name="proof" type="file" accept="image/*" className={input} />
-              <button className={btn}>Terminé</button>
+              <SubmitButton className={btn}>Terminé</SubmitButton>
             </form>
           )}
           {t.status === "to_verify" && t.assignee_id !== ctx.userId && (
@@ -52,8 +73,8 @@ export default async function CleaningPage() {
               <input type="hidden" name="id" value={t.id} />
               <input name="reason" placeholder="Motif (obligatoire si refus)" className={input} />
               <div className="flex gap-2">
-                <button name="accept" value="true" className={btn}>Accepter</button>
-                <button name="accept" value="false" className={btnGhost}>Refuser</button>
+                <SubmitButton name="accept" value="true" className={btn}>Accepter</SubmitButton>
+                <SubmitButton name="accept" value="false" className={btnGhost}>Refuser</SubmitButton>
               </div>
             </form>
           )}

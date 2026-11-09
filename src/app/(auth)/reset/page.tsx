@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import Link from "next/link";
 import { requestReset } from "../actions";
 import s from "../login/landing.module.css";
@@ -12,7 +13,7 @@ export default async function ResetPage({ searchParams }: { searchParams: Promis
         {sent ? <p className={s.lead}>Si ce compte existe, un e-mail de réinitialisation vient d&apos;être envoyé.</p> : (
           <form action={requestReset} className={s.card}>
             <label className={s.field}>Adresse e-mail<input name="email" type="email" required /></label>
-            <button className={s.cta}>Envoyer le lien</button>
+            <SubmitButton className={s.cta}>Envoyer le lien</SubmitButton>
           </form>
         )}
         <div className={s.links}><Link href="/login">Retour à la connexion</Link></div>

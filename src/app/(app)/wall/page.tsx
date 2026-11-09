@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { getContext, loadMembers } from "@/lib/session";
 import { deleteAnnouncement, postAnnouncement, setPinned } from "@/server/actions";
 import { Badge, Empty, Field, btn, btnGhost, card, input } from "@/components/ui";
@@ -16,7 +17,7 @@ export default async function WallPage() {
         <Field label="Titre"><input name="title" required className={input} /></Field>
         <Field label="Message"><textarea name="body" rows={3} className={input} /></Field>
         {ctx.isAdmin && <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="pin" />Épingler cette annonce</label>}
-        <button className={btn}>Publier</button>
+        <SubmitButton className={btn}>Publier</SubmitButton>
       </form>
       {!data?.length && <Empty>Aucune publication.</Empty>}
       {data?.map((a) => (
@@ -29,10 +30,10 @@ export default async function WallPage() {
           <div className="flex gap-2">
             {ctx.isAdmin && (
               <form action={setPinned}><input type="hidden" name="id" value={a.id} /><input type="hidden" name="pinned" value={String(!a.pinned)} />
-                <button className={btnGhost}>{a.pinned ? "Désépingler" : "Épingler"}</button></form>
+                <SubmitButton className={btnGhost}>{a.pinned ? "Désépingler" : "Épingler"}</SubmitButton></form>
             )}
             {(ctx.isAdmin || a.author_id === ctx.userId) && (
-              <form action={deleteAnnouncement}><input type="hidden" name="id" value={a.id} /><button className={btnGhost}>Supprimer</button></form>
+              <form action={deleteAnnouncement}><input type="hidden" name="id" value={a.id} /><SubmitButton className={btnGhost}>Supprimer</SubmitButton></form>
             )}
           </div>
         </article>

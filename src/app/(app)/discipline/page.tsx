@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import Link from "next/link";
 import { getContext, loadMembers, currentPeriod } from "@/lib/session";
 import { reportInfraction } from "@/server/actions";
@@ -45,7 +46,7 @@ export default async function DisciplinePage() {
           <Field label="Description"><textarea name="description" required rows={3} className={input} /></Field>
           <Field label="Photo (4 Mo max)"><input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className={input} /></Field>
           <AiAnalyze />
-          <button className={btn}>Envoyer le signalement</button>
+          <SubmitButton className={btn}>Envoyer le signalement</SubmitButton>
         </form>
       </details>
 

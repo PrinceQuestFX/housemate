@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { randomUUID } from "node:crypto";
 import { getContext, loadMembers } from "@/lib/session";
 import { createExpense, declareTransfer, resolveTransfer } from "@/server/actions";
@@ -51,7 +52,7 @@ export default async function FinancePage() {
             ))}
           </fieldset>
           <Field label="Justificatif (facultatif)"><input name="receipt" type="file" accept="image/*" className={input} /></Field>
-          <button className={btn}>Enregistrer</button>
+          <SubmitButton className={btn}>Enregistrer</SubmitButton>
         </form>
       </details>
 
@@ -63,7 +64,7 @@ export default async function FinancePage() {
             <select name="to" required className={input}>{members.filter((m) => m.id !== ctx.userId).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select>
           </Field>
           <Field label="Montant (DH)"><input name="amount" inputMode="decimal" required className={input} /></Field>
-          <button className={btn}>Déclarer</button>
+          <SubmitButton className={btn}>Déclarer</SubmitButton>
         </form>
       </details>
 
@@ -76,8 +77,8 @@ export default async function FinancePage() {
             {t.status === "pending" && t.to_user === ctx.userId && (
               <form action={resolveTransfer} className="flex gap-2">
                 <input type="hidden" name="id" value={t.id} />
-                <button name="accept" value="true" className={btn}>Confirmer la réception</button>
-                <button name="accept" value="false" className={btnGhost}>Contester</button>
+                <SubmitButton name="accept" value="true" className={btn}>Confirmer la réception</SubmitButton>
+                <SubmitButton name="accept" value="false" className={btnGhost}>Contester</SubmitButton>
               </form>
             )}
           </div>

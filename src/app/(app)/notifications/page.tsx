@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { getContext } from "@/lib/session";
 import { markAllRead } from "@/server/actions";
 import { NOTIFICATION_KINDS } from "@/lib/labels";
@@ -12,7 +13,7 @@ export default async function NotificationsPage() {
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Notifications</h1>
-        <form action={markAllRead}><button className={btnGhost}>Tout marquer comme lu</button></form>
+        <form action={markAllRead}><SubmitButton className={btnGhost}>Tout marquer comme lu</SubmitButton></form>
       </div>
       {!data?.length && <Empty>Rien pour le moment.</Empty>}
       <ul className="space-y-2">

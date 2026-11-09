@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import Link from "next/link";
 import { login } from "../actions";
 import { PasswordField } from "@/components/password-field";
@@ -71,7 +72,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <label className={s.field}>Adresse e-mail<input name="email" type="email" required autoComplete="email" /></label>
           <label className={s.field}>Mot de passe<PasswordField autoComplete="current-password" /></label>
           {error && <p role="alert" className={s.err}>Identifiants invalides.</p>}
-          <button className={s.cta}>Se connecter</button>
+          <SubmitButton className={s.cta}>Se connecter</SubmitButton>
           <div className={s.links}><Link href="/signup">Créer mon compte</Link><Link href="/reset">Mot de passe oublié</Link></div>
         </form>
       </section>

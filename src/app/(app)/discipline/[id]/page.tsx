@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import { notFound } from "next/navigation";
 import { getContext, loadMembers } from "@/lib/session";
 import { castVote, contestInfraction, decideInfraction } from "@/server/actions";
@@ -50,8 +51,8 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
           </Field>
           <Field label="Motif"><textarea name="reason" required rows={2} className={input} /></Field>
           <div className="flex gap-2">
-            <button name="mode" value="validate" className={btnDanger}>Valider la sanction</button>
-            <button name="mode" value="reject" className={btnGhost}>Rejeter</button>
+            <SubmitButton name="mode" value="validate" className={btnDanger}>Valider la sanction</SubmitButton>
+            <SubmitButton name="mode" value="reject" className={btnGhost}>Rejeter</SubmitButton>
           </div>
         </form>
       )}
@@ -61,7 +62,7 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
           <h2 className="font-medium">Contester cette sanction</h2>
           <input type="hidden" name="id" value={id} />
           <Field label="Pourquoi ?"><textarea name="reason" required rows={2} className={input} /></Field>
-          <button className={btn}>Envoyer la contestation</button>
+          <SubmitButton className={btn}>Envoyer la contestation</SubmitButton>
         </form>
       )}
 
@@ -75,8 +76,8 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
             <form action={castVote} className="flex gap-2">
               <input type="hidden" name="contest" value={contest.id} />
               <input type="hidden" name="id" value={id} />
-              <button name="vote" value="uphold" className={btnGhost}>Maintenir</button>
-              <button name="vote" value="overturn" className={btn}>Annuler la sanction</button>
+              <SubmitButton name="vote" value="uphold" className={btnGhost}>Maintenir</SubmitButton>
+              <SubmitButton name="vote" value="overturn" className={btn}>Annuler la sanction</SubmitButton>
             </form>
           )}
           {contest.outcome === "open" && hasVoted && <p className="text-sm text-neutral-500">Votre vote est enregistré.</p>}

@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button";
 import "../theme.css";
 import type { ReactNode } from "react";
 import { getContext } from "@/lib/session";
@@ -20,7 +21,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v10H3z" fill="#F4B942" /><rect x="10" y="14" width="4" height="7" rx="1" fill="#10272B" /></svg>
             <span className="hm-brand">HOUSEMATE</span>
           </span>
-          <form action={logout}><button className="rounded-full border border-teal-600/60 px-3 py-1 text-sm text-teal-100 hover:bg-teal-800/40">Déconnexion</button></form>
+          <form action={logout}><SubmitButton className="rounded-full border border-teal-600/60 px-3 py-1 text-sm text-teal-100 hover:bg-teal-800/40">Déconnexion</SubmitButton></form>
         </div>
         <ul className="flex flex-wrap gap-2">{MORE.map(([h, l]) => <li key={h}><NavLink href={h} pill>{l}</NavLink></li>)}</ul>
       </header>
