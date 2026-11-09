@@ -1,7 +1,7 @@
 // Règles métier pures, miroir des fonctions SQL. Aucune dépendance à Supabase.
 
 export const MONTHLY_CAPITAL = 200;
-export const SANCTION_POINTS = [20, 30, 50] as const;
+export const SANCTION_POINTS = [10, 15, 20, 30] as const;
 export type SanctionPoints = (typeof SANCTION_POINTS)[number];
 
 export function isSanctionPoints(n: number): n is SanctionPoints {

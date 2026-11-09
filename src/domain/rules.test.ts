@@ -4,8 +4,8 @@ import {
 } from "./rules";
 
 describe("points", () => {
-  it("accepte uniquement 20, 30, 50", () => {
-    expect([10, 20, 25, 30, 40, 50].filter(isSanctionPoints)).toEqual([20, 30, 50]);
+  it("accepte uniquement 10, 15, 20, 30", () => {
+    expect([5, 10, 15, 20, 25, 30, 40, 50].filter(isSanctionPoints)).toEqual([10, 15, 20, 30]);
   });
   it("calcule le score mensuel", () => {
     expect(monthlyScore([])).toBe(200);

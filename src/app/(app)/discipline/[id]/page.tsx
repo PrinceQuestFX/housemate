@@ -1,7 +1,7 @@
 import { SubmitButton } from "@/components/submit-button";
 import { notFound } from "next/navigation";
 import { getContext, loadMembers } from "@/lib/session";
-import { castVote, contestInfraction, decideInfraction } from "@/server/actions";
+import { castVote, contestInfraction, decideInfraction, reverseInfraction } from "@/server/actions";
 import { INFRACTION_STATUS, ROOMS } from "@/lib/labels";
 import { SANCTION_POINTS } from "@/domain/rules";
 import { Badge, Field, btn, btnDanger, btnGhost, card, input } from "@/components/ui";
@@ -54,6 +54,16 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
             <SubmitButton name="mode" value="validate" className={btnDanger}>Valider la sanction</SubmitButton>
             <SubmitButton name="mode" value="reject" className={btnGhost}>Rejeter</SubmitButton>
           </div>
+        </form>
+      )}
+
+      {ctx.isAdmin && ["validated", "contested"].includes(inf.status) && (
+        <form action={reverseInfraction} className={`${card} space-y-3`}>
+          <h2 className="font-medium">Annuler la sanction (administrateurs)</h2>
+          <p className="text-sm text-neutral-500">Les {inf.points} points sont rendus à {name(inf.accused_id)} et la sanction passe en « annulée ». Elle reste visible dans l&apos;historique.</p>
+          <input type="hidden" name="id" value={id} />
+          <Field label="Motif"><textarea name="reason" required rows={2} className={input} /></Field>
+          <SubmitButton className={btnDanger}>Remettre les points et annuler</SubmitButton>
         </form>
       )}
 

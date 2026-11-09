@@ -27,7 +27,7 @@ select throws_ok($$insert into public.point_transactions (household_id,user_id,i
 
 -- Un admin : montant invalide refusé, 30 accepté
 reset role; select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
-select throws_ok($$select public.rpc_decide_infraction('11111111-1111-1111-1111-111111111111', true, 40, 'x')$$, 'P0001', 'invalid_points', 'seuls 20/30/50 sont acceptés');
+select throws_ok($$select public.rpc_decide_infraction('11111111-1111-1111-1111-111111111111', true, 40, 'x')$$, 'P0001', 'invalid_points', 'seuls 10/15/20/30 sont acceptés');
 select lives_ok($$select public.rpc_decide_infraction('11111111-1111-1111-1111-111111111111', true, 30, 'preuve claire')$$, 'un admin valide une sanction');
 select is((select sum(delta)::int from public.point_transactions where user_id = '00000000-0000-0000-0000-000000000004'), -30, 'le retrait est de 30 points');
 

@@ -1,7 +1,9 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export async function getContext() {
+/** Mis en cache par requête : le layout et la page partagent la même vérification (moins d'allers-retours vers Supabase). */
+export const getContext = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
@@ -14,7 +16,7 @@ export async function getContext() {
     .maybeSingle();
   if (!m) redirect("/attente"); // compte créé, en attente de validation
   return { supabase, userId, householdId: m.household_id as string, isAdmin: m.role === "admin" };
-}
+});
 
 export type Ctx = Awaited<ReturnType<typeof getContext>>;
 

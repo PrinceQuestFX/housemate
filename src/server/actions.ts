@@ -53,6 +53,14 @@ export async function decideInfraction(f: FormData) {
   revalidatePath(`/discipline/${id}`);
 }
 
+export async function reverseInfraction(f: FormData) {
+  const id = str(f, "id");
+  await rpc("rpc_reverse_infraction", { p_id: id, p_reason: str(f, "reason") });
+  revalidatePath(`/discipline/${id}`);
+  revalidatePath("/discipline");
+  revalidatePath("/dashboard");
+}
+
 export async function contestInfraction(f: FormData) {
   const id = str(f, "id");
   await rpc("rpc_contest_infraction", { p_id: id, p_reason: str(f, "reason") });
