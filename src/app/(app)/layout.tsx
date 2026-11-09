@@ -1,6 +1,6 @@
 import { SubmitButton } from "@/components/submit-button";
 import "../theme.css";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { getContext } from "@/lib/session";
 import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { NavLink } from "@/components/nav-link";
@@ -9,11 +9,20 @@ import { logout } from "../(auth)/actions";
 const MAIN = [["/dashboard", "Accueil"], ["/discipline", "Discipline"], ["/finance", "Finances"], ["/cleaning", "Ménage"], ["/notifications", "Alertes"]] as const;
 const MORE = [["/wall", "Mur"], ["/members", "Membres"], ["/reports", "Rapports"], ["/history", "Historique"], ["/settings", "Réglages"]] as const;
 
-export default async function AppLayout({ children }: { children: ReactNode }) {
-  const { userId, unread } = await getContext();
+/** Chargés à part (Suspense) : le cadre de la page s'affiche tout de suite, sans attendre la base de données. */
+async function Live() {
+  const { userId } = await getContext();
+  return <RealtimeRefresh userId={userId} />;
+}
+async function Unread() {
+  const { unread } = await getContext();
+  return unread ? <> ({unread})</> : null;
+}
+
+export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto min-h-dvh max-w-3xl pb-24">
-      <RealtimeRefresh userId={userId} />
+      <Suspense fallback={null}><Live /></Suspense>
       <header className="sticky top-0 z-10 space-y-3 border-b border-teal-700/40 bg-[#10272B] p-4 print:hidden">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-lg">
@@ -27,7 +36,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <main className="space-y-6 p-4">{children}</main>
       <nav className="fixed inset-x-0 bottom-0 border-t border-teal-700/40 bg-[#10272B] print:hidden" aria-label="Navigation principale">
         <ul className="mx-auto flex max-w-3xl justify-around p-2 text-xs">
-          {MAIN.map(([h, l]) => <li key={h}><NavLink href={h}>{l}{h === "/notifications" && unread ? ` (${unread})` : ""}</NavLink></li>)}
+          {MAIN.map(([h, l]) => <li key={h}><NavLink href={h}>{l}{h === "/notifications" && <Suspense fallback={null}><Unread /></Suspense>}</NavLink></li>)}
         </ul>
       </nav>
     </div>
