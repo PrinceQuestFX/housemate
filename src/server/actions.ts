@@ -38,19 +38,35 @@ export async function reportInfraction(f: FormData) {
     p_room: str(f, "room"),
     p_description: str(f, "description"),
     p_photo: photo,
+    p_points: Number(str(f, "points")) || null,
   });
   redirect(`/discipline/${id}`);
 }
 
-export async function decideInfraction(f: FormData) {
+export async function voteInfraction(f: FormData) {
   const id = str(f, "id");
-  await rpc("rpc_decide_infraction", {
-    p_id: id,
-    p_validate: str(f, "mode") === "validate",
-    p_points: Number(str(f, "points")) || null,
-    p_reason: str(f, "reason"),
-  });
+  await rpc("rpc_vote_infraction", { p_id: id, p_vote: str(f, "vote") === "yes" });
   revalidatePath(`/discipline/${id}`);
+  revalidatePath("/discipline");
+  revalidatePath("/dashboard");
+}
+
+export async function requestBonus(f: FormData) {
+  const { householdId, userId } = await getContext();
+  await rpc("rpc_request_bonus", {
+    p_household: householdId,
+    p_beneficiary: str(f, "beneficiary") || userId,
+    p_points: Number(str(f, "points")),
+    p_description: str(f, "description"),
+  });
+  revalidatePath("/bonus");
+}
+
+export async function decideBonus(f: FormData) {
+  await rpc("rpc_decide_bonus", { p_id: str(f, "id"), p_approve: str(f, "mode") === "approve", p_reason: str(f, "reason") || null });
+  revalidatePath("/bonus");
+  revalidatePath("/discipline");
+  revalidatePath("/dashboard");
 }
 
 export async function reverseInfraction(f: FormData) {

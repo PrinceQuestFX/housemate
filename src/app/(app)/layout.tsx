@@ -7,7 +7,7 @@ import { NavLink } from "@/components/nav-link";
 import { logout } from "../(auth)/actions";
 
 const MAIN = [["/dashboard", "Accueil"], ["/discipline", "Discipline"], ["/finance", "Finances"], ["/cleaning", "Ménage"], ["/notifications", "Alertes"]] as const;
-const MORE = [["/wall", "Mur"], ["/members", "Membres"], ["/reports", "Rapports"], ["/history", "Historique"], ["/settings", "Réglages"]] as const;
+const MORE = [["/bonus", "Bonus"], ["/wall", "Mur"], ["/members", "Membres"], ["/reports", "Rapports"], ["/history", "Historique"], ["/settings", "Réglages"]] as const;
 
 /** Chargés à part (Suspense) : le cadre de la page s'affiche tout de suite, sans attendre la base de données. */
 async function Live() {

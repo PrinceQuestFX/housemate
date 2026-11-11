@@ -1,9 +1,8 @@
 import { SubmitButton } from "@/components/submit-button";
 import { notFound } from "next/navigation";
 import { getContext, loadMembers } from "@/lib/session";
-import { castVote, contestInfraction, decideInfraction, reverseInfraction } from "@/server/actions";
+import { castVote, contestInfraction, reverseInfraction, voteInfraction } from "@/server/actions";
 import { INFRACTION_STATUS, ROOMS } from "@/lib/labels";
-import { SANCTION_POINTS } from "@/domain/rules";
 import { Badge, Field, btn, btnDanger, btnGhost, card, input } from "@/components/ui";
 
 export default async function InfractionPage({ params }: { params: Promise<{ id: string }> }) {
@@ -22,6 +21,11 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
   const { data: votes } = contest
     ? await ctx.supabase.from("contest_votes").select("voter_id, vote").eq("contest_id", contest.id)
     : { data: [] as { voter_id: string; vote: string }[] };
+  const { data: sv } = await ctx.supabase.from("infraction_votes").select("voter_id, vote").eq("infraction_id", id);
+  const eligible = members.filter((m) => m.id !== inf.accused_id).length;
+  const yesN = sv?.filter((v) => v.vote).length ?? 0;
+  const noN = (sv?.length ?? 0) - yesN;
+  const myVote = sv?.find((v) => v.voter_id === ctx.userId);
   const hasVoted = votes?.some((v) => v.voter_id === ctx.userId);
   const up = votes?.filter((v) => v.vote === "uphold").length ?? 0;
   const down = (votes?.length ?? 0) - up;
@@ -42,19 +46,21 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
         ))}
       </section>
 
-      {ctx.isAdmin && ["pending", "reviewing"].includes(inf.status) && (
-        <form action={decideInfraction} className={`${card} space-y-3`}>
-          <h2 className="font-medium">Décision (administrateurs)</h2>
-          <input type="hidden" name="id" value={id} />
-          <Field label="Points à retirer si validé">
-            <select name="points" className={input}>{SANCTION_POINTS.map((p) => <option key={p} value={p}>{p} points</option>)}</select>
-          </Field>
-          <Field label="Motif"><textarea name="reason" required rows={2} className={input} /></Field>
-          <div className="flex gap-2">
-            <SubmitButton name="mode" value="validate" className={btnDanger}>Valider la sanction</SubmitButton>
-            <SubmitButton name="mode" value="reject" className={btnGhost}>Rejeter</SubmitButton>
-          </div>
-        </form>
+      {["pending", "reviewing"].includes(inf.status) && (
+        <section className={`${card} space-y-3`}>
+          <h2 className="font-medium">Vote de la maison</h2>
+          <p className="text-sm">Sanction proposée : -{inf.proposed_points} points pour {name(inf.accused_id)}. Il faut {Math.floor(eligible / 2) + 1} « oui » sur {eligible} votants pour la valider.</p>
+          <p className="text-sm">Oui : {yesN} · Non : {noN}</p>
+          {inf.accused_id === ctx.userId && <p className="text-sm text-neutral-500">Vous ne votez pas sur votre propre sanction.</p>}
+          {inf.accused_id !== ctx.userId && myVote && <p className="text-sm text-neutral-500">Votre vote est enregistré : {myVote.vote ? "oui" : "non"}.</p>}
+          {inf.accused_id !== ctx.userId && !myVote && (
+            <form action={voteInfraction} className="flex gap-2">
+              <input type="hidden" name="id" value={id} />
+              <SubmitButton name="vote" value="yes" className={btnDanger}>Oui, sanctionner</SubmitButton>
+              <SubmitButton name="vote" value="no" className={btnGhost}>Non</SubmitButton>
+            </form>
+          )}
+        </section>
       )}
 
       {ctx.isAdmin && ["validated", "contested"].includes(inf.status) && (

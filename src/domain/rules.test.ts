@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  earnsMonthlyCongratulations, isSanctionPoints, monthlyScore, resolveContest, splitEqual,
+  earnsMonthlyCongratulations, isSanctionPoints, monthlyScore, resolveContest, resolveSanctionVote, splitEqual,
 } from "./rules";
 
 describe("points", () => {
-  it("accepte uniquement 10, 15, 20, 30", () => {
-    expect([5, 10, 15, 20, 25, 30, 40, 50].filter(isSanctionPoints)).toEqual([10, 15, 20, 30]);
+  it("accepte uniquement 5, 10, 15, 20, 30", () => {
+    expect([5, 10, 15, 20, 25, 30, 40, 50].filter(isSanctionPoints)).toEqual([5, 10, 15, 20, 30]);
   });
   it("calcule le score mensuel", () => {
     expect(monthlyScore([])).toBe(200);
@@ -42,5 +42,14 @@ describe("vote de contestation", () => {
   });
   it("3 sur 5 pour annuler", () => {
     expect(resolveContest(["overturn", "overturn", "uphold", "overturn"], 5)).toBe("overturned");
+  });
+});
+
+describe("vote sur une sanction", () => {
+  it("valide à la majorité des votants éligibles", () => {
+    expect(resolveSanctionVote(3, 0, 4)).toBe("validated");
+    expect(resolveSanctionVote(2, 1, 4)).toBe("open");
+    expect(resolveSanctionVote(1, 2, 4)).toBe("rejected");
+    expect(resolveSanctionVote(0, 0, 4)).toBe("open");
   });
 });

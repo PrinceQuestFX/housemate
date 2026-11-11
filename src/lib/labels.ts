@@ -27,5 +27,10 @@ export const NOTIFICATION_KINDS: Record<string, string> = {
   "cleaning.to_verify": "Une tâche est à vérifier",
   "cleaning.validated": "Votre nettoyage a été validé",
   "cleaning.refused": "Votre nettoyage a été refusé",
+  "infraction.validated": "Une sanction vous concernant a été validée par vote",
+  "bonus.requested": "Une demande de bonus est à valider",
+  "bonus.decided": "Une demande de bonus a été traitée",
   "month.congratulations": "Félicitations : 200 points sur le mois",
 };
+
+export const BONUS_STATUS: Record<string, string> = { pending: "En attente", approved: "Accepté", rejected: "Refusé" };
