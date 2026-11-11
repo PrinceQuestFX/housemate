@@ -34,3 +34,21 @@ export const NOTIFICATION_KINDS: Record<string, string> = {
 };
 
 export const BONUS_STATUS: Record<string, string> = { pending: "En attente", approved: "Accepté", rejected: "Refusé" };
+
+/** Traduit l'erreur renvoyée par la base en phrase claire. */
+export function errorMessage(raw: string): string {
+  const M: [string, string][] = [
+    ["Could not find the function", "La base de données n'est pas à jour : appliquez la dernière migration (npx supabase db push --linked)."],
+    ["accused_required", "Choisissez le membre concerné."],
+    ["invalid_points", "Choisissez un nombre de points valide."],
+    ["accused_cannot_vote", "Vous ne pouvez pas voter sur votre propre sanction."],
+    ["duplicate key", "Vous avez déjà voté."],
+    ["already_decided", "Cette décision est déjà prise."],
+    ["cannot_decide_own", "Un autre administrateur doit valider cette demande."],
+    ["reason_required", "Le motif est obligatoire."],
+    ["forbidden", "Action non autorisée."],
+    ["beneficiary_not_member", "Cette personne ne fait pas partie de la maison."],
+    ["check constraint", "Valeur refusée par les règles de la maison."],
+  ];
+  return M.find(([k]) => raw.includes(k))?.[1] ?? `Cette action a échoué (${raw}).`;
+}

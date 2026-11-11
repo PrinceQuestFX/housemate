@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { getContext, loadMembers } from "@/lib/session";
 import { castVote, contestInfraction, reverseInfraction, voteInfraction } from "@/server/actions";
 import { INFRACTION_STATUS, ROOMS } from "@/lib/labels";
+import { FlashError } from "@/components/flash-error";
 import { Badge, Field, btn, btnDanger, btnGhost, card, input } from "@/components/ui";
 
-export default async function InfractionPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InfractionPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string }> }) {
   const { id } = await params;
+  const { err } = await searchParams;
   const ctx = await getContext();
   const { data: inf } = await ctx.supabase.from("infractions").select("*").eq("id", id).maybeSingle();
   if (!inf) notFound();
@@ -36,6 +38,7 @@ export default async function InfractionPage({ params }: { params: Promise<{ id:
         <h1 className="text-2xl font-semibold">{ROOMS[inf.room]}</h1>
         <Badge>{INFRACTION_STATUS[inf.status]}</Badge>
       </div>
+      <FlashError err={err} />
       <section className={`${card} space-y-2 text-sm`}>
         <p>{inf.description}</p>
         <p className="text-neutral-500">Signalé par {name(inf.author_id)} · concerne {name(inf.accused_id)}</p>

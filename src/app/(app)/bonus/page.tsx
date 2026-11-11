@@ -3,9 +3,11 @@ import { getContext, loadMembers } from "@/lib/session";
 import { decideBonus, requestBonus } from "@/server/actions";
 import { BONUS_STATUS } from "@/lib/labels";
 import { BONUS_POINTS } from "@/domain/rules";
+import { FlashError } from "@/components/flash-error";
 import { Badge, Empty, Field, btn, btnDanger, btnGhost, card, input } from "@/components/ui";
 
-export default async function BonusPage() {
+export default async function BonusPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+  const { err } = await searchParams;
   const ctx = await getContext();
   const members = await loadMembers(ctx);
   const name = (id: string) => members.find((m) => m.id === id)?.name ?? "—";
@@ -16,6 +18,7 @@ export default async function BonusPage() {
   return (
     <>
       <h1 className="text-2xl">Bonus</h1>
+      <FlashError err={err} />
       <p className="text-sm text-neutral-500">Vous avez fait une bonne action ? Demandez des points : un administrateur valide.</p>
 
       <form action={requestBonus} className={`${card} space-y-3`}>

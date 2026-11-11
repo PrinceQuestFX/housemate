@@ -9,6 +9,14 @@ import { toMinor } from "@/lib/money";
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const MAX_PHOTO = 4 * 1024 * 1024; // limite de requête Vercel ; compression côté client à prévoir
 
+/** Comme rpc, mais renvoie l'erreur lisible sur la page d'origine (?err=) au lieu de planter. */
+async function rpcOr(back: string, name: string, args: Record<string, unknown>) {
+  const { supabase } = await getContext();
+  const { data, error } = await supabase.rpc(name, args);
+  if (error) redirect(`${back}?err=${encodeURIComponent(error.message.slice(0, 200))}`);
+  return data;
+}
+
 async function rpc(name: string, args: Record<string, unknown>) {
   const { supabase } = await getContext();
   const { data, error } = await supabase.rpc(name, args);
@@ -32,7 +40,7 @@ async function uploadPhoto(file: File | null): Promise<string | null> {
 export async function reportInfraction(f: FormData) {
   const { householdId } = await getContext();
   const photo = await uploadPhoto(f.get("photo") as File | null);
-  const id = await rpc("rpc_create_infraction", {
+  const id = await rpcOr("/discipline", "rpc_create_infraction", {
     p_household: householdId,
     p_accused: str(f, "accused") || null,
     p_room: str(f, "room"),
@@ -45,7 +53,7 @@ export async function reportInfraction(f: FormData) {
 
 export async function voteInfraction(f: FormData) {
   const id = str(f, "id");
-  await rpc("rpc_vote_infraction", { p_id: id, p_vote: str(f, "vote") === "yes" });
+  await rpcOr(`/discipline/${id}`, "rpc_vote_infraction", { p_id: id, p_vote: str(f, "vote") === "yes" });
   revalidatePath(`/discipline/${id}`);
   revalidatePath("/discipline");
   revalidatePath("/dashboard");
@@ -53,7 +61,7 @@ export async function voteInfraction(f: FormData) {
 
 export async function requestBonus(f: FormData) {
   const { householdId, userId } = await getContext();
-  await rpc("rpc_request_bonus", {
+  await rpcOr("/bonus", "rpc_request_bonus", {
     p_household: householdId,
     p_beneficiary: str(f, "beneficiary") || userId,
     p_points: Number(str(f, "points")),
@@ -63,7 +71,7 @@ export async function requestBonus(f: FormData) {
 }
 
 export async function decideBonus(f: FormData) {
-  await rpc("rpc_decide_bonus", { p_id: str(f, "id"), p_approve: str(f, "mode") === "approve", p_reason: str(f, "reason") || null });
+  await rpcOr("/bonus", "rpc_decide_bonus", { p_id: str(f, "id"), p_approve: str(f, "mode") === "approve", p_reason: str(f, "reason") || null });
   revalidatePath("/bonus");
   revalidatePath("/discipline");
   revalidatePath("/dashboard");

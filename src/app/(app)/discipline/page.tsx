@@ -5,9 +5,11 @@ import { reportInfraction } from "@/server/actions";
 import { INFRACTION_STATUS, ROOMS } from "@/lib/labels";
 import { SANCTION_POINTS, monthlyScore } from "@/domain/rules";
 import { AiAnalyze } from "@/components/ai-analyze";
+import { FlashError } from "@/components/flash-error";
 import { Badge, Empty, Field, btn, card, input } from "@/components/ui";
 
-export default async function DisciplinePage() {
+export default async function DisciplinePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+  const { err } = await searchParams;
   const ctx = await getContext();
   const members = await loadMembers(ctx);
   const names = new Map(members.map((m) => [m.id, m.name]));
@@ -23,6 +25,7 @@ export default async function DisciplinePage() {
   return (
     <>
       <h1 className="text-2xl font-semibold">Discipline</h1>
+      <FlashError err={err} />
       <section className={card} aria-label="Classement du mois">
         <h2 className="mb-2 font-medium">Classement du mois</h2>
         <ol className="space-y-1 text-sm">
